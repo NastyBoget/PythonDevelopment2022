@@ -4,7 +4,6 @@ import inspect
 from typing import Any, List
 import difflib
 import ast
-import astunparse
 import textwrap
 
 
@@ -15,7 +14,7 @@ def get_func_list(entity: Any, prev_name: str) -> List[tuple]:
             continue
         if inspect.ismethod(entity_data) or inspect.isfunction(entity_data):
             result_func_list.append((f"{prev_name}.{entity_name}", entity_data))
-        elif inspect.isclass(entity_data) or inspect.ismethod(entity_data):
+        elif inspect.isclass(entity_data):
             result_func_list.extend(get_func_list(entity_data, f"{prev_name}.{entity_name}"))
 
     return result_func_list
@@ -27,7 +26,7 @@ def process_func(func: Any) -> str:
         for attr_name in ['name', 'id', 'arg', 'attr']:
             if hasattr(node, attr_name):
                 setattr(node, attr_name, "_")
-    return astunparse.unparse(func_ast)
+    return ast.unparse(func_ast)
 
 
 if __name__ == "__main__":
